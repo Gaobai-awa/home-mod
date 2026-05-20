@@ -1,0 +1,4 @@
+{
+    "itemGroup.homemod": "Home_mod",
+    "command.homemod.description": "家管理模组：/sethome, /home, /back, /listhomes, /delhome"
+}

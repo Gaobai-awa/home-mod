@@ -1,0 +1,11 @@
+{
+    "schemaVersion": 1,
+    "label": "Home_mod",
+    "message": "v1.0.0",
+    "colorScheme": {
+        "schemaVersion": 1,
+        "themes": {
+            "isDark": false
+        }
+    }
+}

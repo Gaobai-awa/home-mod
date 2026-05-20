@@ -1,0 +1,25 @@
+{
+    "schemaVersion": 1,
+    "id": "homemod",
+    "version": "${version}",
+    "name": "Home_mod",
+    "description": "Home management: /sethome, /home, /back, /listhomes, /delhome",
+    "authors": ["Gaobaiawa", "DeepSeek V4-Flash"],
+    "contact": {
+        "sources": "https://github.com/Gaobai-awa/home-mod"
+    },
+    "license": "MIT",
+    "environment": "*",
+    "entrypoints": {
+        "main": ["net.homemod.HomeMod"]
+    },
+    "depends": {
+        "fabricloader": ">=0.15.0",
+        "fabric-api": "*",
+        "minecraft": "1.20.1",
+        "java": ">=17"
+    },
+    "suggests": {
+        "another-mod": "*"
+    }
+}
