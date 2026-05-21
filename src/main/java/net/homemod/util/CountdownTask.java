@@ -101,18 +101,39 @@ public class CountdownTask {
                 continue;
             }
 
-            // Spawn particles rising up
+            // Spawn spiral particles rising up around player
             state.particleCounter++;
             if (state.particleCounter % 2 == 0) {
                 ServerWorld world = (ServerWorld) player.getWorld();
                 Vec3d p = player.getPos();
+                double tick = state.particleCounter;
+                double radius = 0.8;
                 double height = (60 - state.remainingTicks) / 60.0 * 3.0;
+                double angle = tick * 0.3;
+                // END_ROD spiral ring
+                double x1 = p.x + radius * Math.cos(angle);
+                double z1 = p.z + radius * Math.sin(angle);
+                double x2 = p.x + radius * Math.cos(angle + Math.PI);
+                double z2 = p.z + radius * Math.sin(angle + Math.PI);
                 world.spawnParticles(ParticleTypes.END_ROD,
-                    p.x, p.y + 0.5 + height, p.z,
-                    2, 0.1, 0.1, 0.1, 0.01);
+                    x1, p.y + 0.2 + height, z1,
+                    1, 0.02, 0.02, 0.02, 0.0);
+                world.spawnParticles(ParticleTypes.END_ROD,
+                    x2, p.y + 0.2 + height, z2,
+                    1, 0.02, 0.02, 0.02, 0.0);
+                // ENCHANTED_HIT inner ring (smaller radius, phase shifted)
+                double r2 = 0.5;
+                double a2 = angle + 1.0;
+                double ex1 = p.x + r2 * Math.cos(a2);
+                double ez1 = p.z + r2 * Math.sin(a2);
+                double ex2 = p.x + r2 * Math.cos(a2 + Math.PI);
+                double ez2 = p.z + r2 * Math.sin(a2 + Math.PI);
                 world.spawnParticles(ParticleTypes.ENCHANTED_HIT,
-                    p.x, p.y + 0.5 + height, p.z,
-                    1, 0.05, 0.05, 0.05, 0.0);
+                    ex1, p.y + 0.3 + height, ez1,
+                    1, 0.01, 0.01, 0.01, 0.0);
+                world.spawnParticles(ParticleTypes.ENCHANTED_HIT,
+                    ex2, p.y + 0.3 + height, ez2,
+                    1, 0.01, 0.01, 0.01, 0.0);
             }
 
             state.remainingTicks--;

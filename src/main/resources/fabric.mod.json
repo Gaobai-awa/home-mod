@@ -3,7 +3,7 @@
     "id": "homemod",
     "version": "${version}",
     "name": "Home_mod",
-    "description": "Home management: /sethome, /home, /back, /listhomes, /delhome",
+    "description": "Minecraft 1.20.1 Fabric 回家模组——支持倒计时传送、粒子特效、家数量限制。",
     "authors": ["Gaobaiawa", "DeepSeek V4-Flash"],
     "contact": {
         "sources": "https://github.com/Gaobai-awa/home-mod"
