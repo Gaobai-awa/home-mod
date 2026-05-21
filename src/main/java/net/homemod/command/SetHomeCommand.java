@@ -1,5 +1,6 @@
 package net.homemod.command;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.homemod.HomeMod;
 import net.homemod.config.HomeConfig;
 import net.minecraft.particle.ParticleTypes;
@@ -9,44 +10,44 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.UUID;
+
 public class SetHomeCommand {
 
-    public static int execute(ServerCommandSource source, String name) {
-        ServerPlayerEntity player = source.getPlayer();
-        if (player == null) {
-            source.sendFeedback(() -> Text.literal("\u00a7c[Home] Only players can use this command."), false);
+    public static int execute(ServerCommandSource source, String name) throws CommandSyntaxException {
+        ServerPlayerEntity player = source.getPlayerOrThrow();
+        UUID uuid = player.getUuid();
+        String uuidStr = uuid.toString();
+
+        // Check limit: max 100 homes per player
+        int homeCount = HomeMod.CONFIG.listHomes(uuidStr).size();
+        if (homeCount >= 100) {
+            player.sendMessage(Text.literal("\u00a7c[Home] \u4f60\u6700\u591a\u53ea\u80fd\u4fdd\u5b58 \u00a7e100\u00a7c \u4e2a\u5bb6\uff01\u5df2\u7528: " + homeCount), false);
             return 0;
         }
 
-        String uuid = player.getUuid().toString();
-        Vec3d pos = player.getPos();
-        float yaw = player.getYaw();
-        float pitch = player.getPitch();
-        String worldId = player.getWorld().getRegistryKey().getValue().toString();
-
-        HomeConfig.HomeData home = new HomeConfig.HomeData(
-            pos.x, pos.y, pos.z, yaw, pitch, worldId
+        HomeConfig.HomeData data = new HomeConfig.HomeData(
+            player.getX(), player.getY(), player.getZ(),
+            player.getYaw(), player.getPitch(),
+            player.getWorld().getRegistryKey().getValue().toString()
         );
 
-        HomeMod.CONFIG.setHome(uuid, name, home);
+        HomeMod.CONFIG.setHome(uuidStr, name, data);
 
-        player.sendMessage(Text.literal(
-            "\u00a7a[Home] \u00a7fHome \u00a7e'" + name + "'\u00a7a set at \u00a7f("
-            + (int) pos.x + ", " + (int) pos.y + ", " + (int) pos.z + ")"
-        ), false);
+        player.sendMessage(Text.literal("\u00a7a[Home] \u6210\u529f\u8bbe\u7f6e\u5bb6 \"" + name + "\" \u00a7f[" + (int)data.x + ", " + (int)data.y + ", " + (int)data.z + "]"), false);
 
-        // Sparkle particles
-        spawnSetEffect(player, pos);
+        // Golden particle effect
+        if (player.getWorld() instanceof ServerWorld) {
+            ServerWorld world = (ServerWorld) player.getWorld();
+            Vec3d pos = player.getPos();
+            world.spawnParticles(ParticleTypes.ENCHANTED_HIT,
+                pos.x, pos.y + 0.5, pos.z,
+                10, 0.2, 0.3, 0.2, 0.02);
+            world.spawnParticles(ParticleTypes.HAPPY_VILLAGER,
+                pos.x, pos.y + 0.5, pos.z,
+                8, 0.2, 0.2, 0.2, 0.01);
+        }
 
         return 1;
-    }
-
-    private static void spawnSetEffect(ServerPlayerEntity player, Vec3d pos) {
-        if (player.getWorld().isClient) return;
-        ServerWorld world = (ServerWorld) player.getWorld();
-        world.spawnParticles(ParticleTypes.ENCHANTED_HIT,
-            pos.x, pos.y + 1.0, pos.z, 30, 0.4, 0.6, 0.4, 0.02);
-        world.spawnParticles(ParticleTypes.HAPPY_VILLAGER,
-            pos.x, pos.y + 0.5, pos.z, 15, 0.3, 0.4, 0.3, 0.05);
     }
 }

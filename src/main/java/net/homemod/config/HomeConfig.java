@@ -1,6 +1,5 @@
 package net.homemod.config;
 
-import com.google.gson.annotations.SerializedName;
 import net.homemod.HomeMod;
 
 import java.io.IOException;
@@ -13,6 +12,8 @@ public class HomeConfig {
 
     // playerUuid -> (homeName -> HomeData)
     private Map<String, PlayerHomes> players = new HashMap<>();
+    // playerUuid -> last teleport source position (for /back)
+    private Map<String, HomeData> lastPositions = new HashMap<>();
 
     public static HomeConfig load() {
         try {
@@ -64,6 +65,14 @@ public class HomeConfig {
         PlayerHomes ph = players.get(uuid);
         if (ph == null) return Collections.emptyList();
         return ph.homes.keySet();
+    }
+
+    public HomeData getLastPosition(String uuid) {
+        return lastPositions.get(uuid);
+    }
+
+    public void setLastPosition(String uuid, HomeData data) {
+        lastPositions.put(uuid, data);
     }
 
     public boolean hasHome(String uuid, String name) {

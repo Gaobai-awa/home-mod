@@ -1,7 +1,11 @@
-# Gradle
+# Gradle (exclude everything except gradle wrapper)
 .gradle/
+gradle/wrapper/gradle-wrapper.jar
+gradle/wrapper/gradle-wrapper.properties
+!gradle/wrapper/
+
+# Build output
 build/
-!gradle/wrapper/gradle-wrapper.jar
 
 # IDE
 .idea/

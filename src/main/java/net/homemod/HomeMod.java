@@ -3,9 +3,8 @@ package net.homemod;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.homemod.command.HomeCommand;
 import net.homemod.config.HomeConfig;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.homemod.util.CountdownTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +33,7 @@ public class HomeMod implements ModInitializer {
 
         LOGGER.info("Home_mod loaded! Commands: /sethome, /home, /back, /listhomes, /delhome");
         registerCommands();
-        registerCallbacks();
+        registerTick();
     }
 
     private void registerCommands() {
@@ -90,12 +89,9 @@ public class HomeMod implements ModInitializer {
         });
     }
 
-    private void registerCallbacks() {
-        // Poll for home particle respawn each server tick
+    private void registerTick() {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
-            for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-                HomeCommand.onPlayerTick(player);
-            }
+            CountdownTask.tickAll(server);
         });
     }
 }
