@@ -3,7 +3,7 @@
     "id": "homemod",
     "version": "${version}",
     "name": "Home_mod",
-    "description": "Minecraft 1.20.1 Fabric 回家模组——支持倒计时传送、粒子特效、家数量限制。",
+    "description": "\u6280\u80fd:\n/sethome [\u540d\u5b57] - \u8bbe\u7f6e\u5bb6\uff0c\u9ed8\u8ba4home\n/home [\u540d\u5b57] - \u4f20\u9001\u56de\u5bb6\uff0c3\u79d2\u5012\u8ba1\u65f6\uff0c\u79fb\u52a8\u53d6\u6d88\n/back - \u8fd4\u56de\u4e0a\u6b21\u4f20\u9001\u4f4d\u7f6e\n/listhomes - \u5217\u51fa\u6240\u6709\u5bb6\n/delhome \u540d\u5b57 - \u5220\u9664\u5bb6\n\nMinecraft 1.20.1 Fabric",
     "authors": ["Gaobaiawa", "DeepSeek V4-Flash"],
     "contact": {
         "sources": "https://github.com/Gaobai-awa/home-mod"
