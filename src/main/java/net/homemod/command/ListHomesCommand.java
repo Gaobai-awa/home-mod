@@ -1,5 +1,6 @@
 package net.homemod.command;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.homemod.HomeMod;
 import net.minecraft.server.command.ServerCommandSource;
@@ -9,6 +10,13 @@ import net.minecraft.text.Text;
 import java.util.Collection;
 
 public class ListHomesCommand {
+
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+        dispatcher.register(
+            net.minecraft.server.command.CommandManager.literal("listhomes")
+                .executes(ctx -> execute(ctx.getSource()))
+        );
+    }
 
     public static int execute(ServerCommandSource source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getPlayerOrThrow();
