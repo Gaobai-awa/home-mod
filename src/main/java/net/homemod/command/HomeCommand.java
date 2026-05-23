@@ -39,7 +39,7 @@ public class HomeCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
             net.minecraft.server.command.CommandManager.literal("home")
-                .then(net.minecraft.server.command.CommandManager.argument("name", StringArgumentType.string())
+                .then(net.minecraft.server.command.CommandManager.argument("name", StringArgumentType.greedyString())
                     .suggests(HOME_SUGGESTIONS)
                     .executes(ctx -> execute(ctx.getSource(), StringArgumentType.getString(ctx, "name"))))
                 .executes(ctx -> execute(ctx.getSource(), "home"))

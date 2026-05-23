@@ -19,7 +19,7 @@ public class SetHomeCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
             net.minecraft.server.command.CommandManager.literal("sethome")
-                .then(net.minecraft.server.command.CommandManager.argument("name", StringArgumentType.string())
+                .then(net.minecraft.server.command.CommandManager.argument("name", StringArgumentType.greedyString())
                     .executes(ctx -> execute(ctx.getSource(), StringArgumentType.getString(ctx, "name"))))
                 .executes(ctx -> execute(ctx.getSource(), "home"))
         );
@@ -44,6 +44,7 @@ public class SetHomeCommand {
         );
 
         HomeMod.CONFIG.setHome(uuidStr, name, data);
+        HomeMod.CONFIG.setLastPosition(uuidStr, data);
         player.sendMessage(Text.literal("\u00a7a[Home] \u6210\u529f\u8bbe\u7f6e\u5bb6 \"" + name + "\" \u00a7f[" + (int)data.x + ", " + (int)data.y + ", " + (int)data.z + "]"), false);
 
         // Particle effects
