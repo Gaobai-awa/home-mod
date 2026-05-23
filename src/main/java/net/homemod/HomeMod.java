@@ -3,6 +3,7 @@ package net.homemod;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.PlayerDeathCallback;
 import net.homemod.command.*;
 import net.homemod.config.HomeConfig;
 import net.homemod.util.CountdownTask;
@@ -52,6 +53,17 @@ public class HomeMod implements ModInitializer {
     private void registerTick() {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             CountdownTask.tickAll(server);
+        });
+        PlayerDeathCallback.EVENT.register((player, damageSource) -> {
+            if (player instanceof ServerPlayerEntity sp) {
+                HomeConfig.HomeData deathPos = new HomeConfig.HomeData(
+                    sp.getX(), sp.getY(), sp.getZ(),
+                    sp.getYaw(), sp.getPitch(),
+                    sp.getWorld().getRegistryKey().getValue().toString()
+                );
+                HomeMod.CONFIG.setLastPosition(sp.getUuidAsString(), deathPos);
+                HomeMod.LOGGER.info("Recorded death position for {}", sp.getName().getString());
+            }
         });
     }
 }
