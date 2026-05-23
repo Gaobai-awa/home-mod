@@ -3,7 +3,6 @@ package net.homemod;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.event.player.PlayerDeathCallback;
 import net.homemod.command.*;
 import net.homemod.config.HomeConfig;
 import net.homemod.util.CountdownTask;
@@ -15,6 +14,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class HomeMod implements ModInitializer {
     public static final String MOD_ID = "homemod";
@@ -22,6 +24,9 @@ public class HomeMod implements ModInitializer {
     public static final com.google.gson.Gson GSON = new com.google.gson.GsonBuilder().setPrettyPrinting().create();
     public static Path CONFIG_DIR;
     public static HomeConfig CONFIG;
+
+    // Track player health for death detection
+    private static final Map<UUID, Float> PREV_HEALTH = new HashMap<>();
 
     @Override
     public void onInitialize() {
@@ -46,23 +51,31 @@ public class HomeMod implements ModInitializer {
             BackCommand.register(dispatcher);
             ListHomesCommand.register(dispatcher);
             DelHomeCommand.register(dispatcher);
-            LOGGER.info("All home-mod commands registered");
         });
     }
 
     private void registerTick() {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             CountdownTask.tickAll(server);
-        });
-        PlayerDeathCallback.EVENT.register((player, damageSource) -> {
-            if (player instanceof ServerPlayerEntity sp) {
-                HomeConfig.HomeData deathPos = new HomeConfig.HomeData(
-                    sp.getX(), sp.getY(), sp.getZ(),
-                    sp.getYaw(), sp.getPitch(),
-                    sp.getWorld().getRegistryKey().getValue().toString()
-                );
-                HomeMod.CONFIG.setLastPosition(sp.getUuidAsString(), deathPos);
-                HomeMod.LOGGER.info("Recorded death position for {}", sp.getName().getString());
+
+            // Death detection: check when health drops from >0 to 0
+            for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+                UUID uuid = player.getUuid();
+                float currentHealth = player.getHealth();
+                Float prev = PREV_HEALTH.get(uuid);
+
+                if (prev != null && prev > 0.0f && currentHealth <= 0.0f) {
+                    // Player just died
+                    HomeConfig.HomeData deathPos = new HomeConfig.HomeData(
+                        player.getX(), player.getY(), player.getZ(),
+                        player.getYaw(), player.getPitch(),
+                        player.getWorld().getRegistryKey().getValue().toString()
+                    );
+                    CONFIG.setLastPosition(uuid.toString(), deathPos);
+                    LOGGER.info("Recorded death position for {}", player.getName().getString());
+                }
+
+                PREV_HEALTH.put(uuid, currentHealth);
             }
         });
     }
