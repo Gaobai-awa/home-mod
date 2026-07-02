@@ -62,7 +62,7 @@ Minecraft 1.20.1 Fabric 模组 — 传送回家 + 倒计时 + 粒子特效。
 ## 安装方法
 
 1. 从 [最新版发布页](https://github.com/Gaobai-awa/home-mod/releases) 下载 `home-mod-1.0.0.jar`
-2. 将 JAR 放入服务器的 `mods` 文件夹
+2. 将 JAR 放入服务器、客户端的 `mods` 文件夹
 3. 重启服务器即可
 
 ---
