@@ -46,7 +46,7 @@ When you run `/home` or `/back`, a **3-second countdown** starts:
 - Works across dimensions
 
 ### Notes
-- Server-side only — effects visible to all players even if they don't have the mod
+- Server、client-side must also install — effects visible to all players even if they don't have the mod,but must client installthis mod's player can use.
 - Supports cross-dimension teleport
 
 ---
@@ -62,7 +62,7 @@ When you run `/home` or `/back`, a **3-second countdown** starts:
 ## Installation
 
 1. Download `home-mod-1.0.0.jar` from the [Latest Release](https://github.com/Gaobai-awa/home-mod/releases)
-2. Place the JAR in your server's `mods` folder
+2. Place the JAR in your server、client's `mods` folder
 3. Restart the server
 
 ---
